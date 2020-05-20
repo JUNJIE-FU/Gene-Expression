@@ -1,0 +1,32 @@
+.form-type-checkboxes {
+    float: left;
+    width: 100%;
+}
+
+.sampleMenu_pop .form-type-checkbox {
+    float: left;
+    width: 118px;
+}
+
+.sampleMenu_ref .form-type-checkbox {
+    float: left;
+    width: 360px;
+}
+
+.selectAll_checkbox {
+    margin-left: 5px;
+}
+
+.selectAll_label {
+    margin-top: 15px;
+    margin-bottom: 0px;
+}
+
+.form-item-population {
+    float: left;
+}
+
+.form-item-tissue {
+    clear: right;
+    margin-left: 240px;
+}

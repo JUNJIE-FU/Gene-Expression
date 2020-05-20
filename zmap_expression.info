@@ -1,0 +1,5 @@
+name = Zmap Expression
+description = Display form and heatmap for Zmap gene Expression. Install R-base and ape before use this module.
+project = zmap_expression
+package = Zmap
+core = 7.x

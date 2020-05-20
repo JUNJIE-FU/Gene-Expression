@@ -1,0 +1,148 @@
+<?php
+/**
+ * Notice: Install R-base and ape package before use this module.
+ */
+require_once 'includes/zmap_expression_input_geneids.form.inc';
+require_once 'api/zmap_expression.api.inc';
+
+/**
+ * Implements hook_menu.
+ */
+function zmap_expression_menu()
+{
+    $items['zmap_expression/pop'] = array(
+        'title' => 'ZEAMAP Gene Expression',
+        'page callback' => 'zmap_expression_search',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['zmap_expression/ref'] = array(
+        'title' => 'ZEAMAP Gene Expression',
+        'page callback' => 'zmap_expression_search',
+        'page arguments' => array(1),
+        'access arguments' => array('access content'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['zmap_expression/search/result/etype/%/geneids/%/samples/%'] = array(
+        'title' => 'ZEAMAP Gene Expression',
+        'page callback' => 'zmap_expression_search_result',
+        'page arguments' => array(4, 6, 8),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+    $items['zmap_expression/search/result/downloadtsv/%'] = array(
+        'title' => 'ZEAMAP Gene Expression',
+        'page callback' => 'zmap_expression_search_result_downloadtsv',
+        'page arguments' => array(4),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+    //api retrive tissues
+    $items['api/expression/%/samples'] = array(
+        'page callback' => 'zmap_expression_api_retrive_samples',
+        'page arguments' => array(2),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+    //api retrive format geneids
+    $items['api/gene/geneids/%'] = array(
+        'page callback' => 'zmap_expression_api_retrive_geneids',
+        'page arguments' => array(3),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+    //api retrive expression media data for selected samples and geneids
+    $items['api/exp_gene/type/%/samples/%/geneids/%'] = array(
+        'page callback' => 'zmap_expression_api_retrive_media_data',
+        'page arguments' => array(3, 5, 7),
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+}
+
+function zmap_expression_search($arg)
+{
+    $arg = trim($arg, '#');
+    $path = drupal_get_path('module', 'zmap_expression');
+    drupal_add_js($path.'/theme/js/jquery-3.2.1.min.js');
+    drupal_add_js($path.'/theme/js/zmap_expression_form.js');
+    drupal_add_css($path.'/theme/css/zmap_expression_search_form.css', array('group' => CSS_DEFAULT, 'every_page' => false));
+
+    return theme('zmap_expression_search', array('type' => $arg));
+}
+
+function zmap_expression_search_result($etype, $geneids, $samples)
+{
+    $path = drupal_get_path('module', 'zmap_expression');
+	//add css
+    drupal_add_css($path.'/theme/css/bootstrap.min.css', array('group' => CSS_DEFAULT, 'every_page' => false));
+    drupal_add_css($path.'/theme/css/all.css', array('group' => CSS_DEFAULT, 'every_page' => false));
+    drupal_add_css($path.'/theme/css/select2.min.css', array('group' => CSS_DEFAULT, 'every_page' => false));
+    drupal_add_css($path.'/theme/css/dendrogram.css', array('group' => CSS_DEFAULT, 'every_page' => false));
+    drupal_add_css($path.'/theme/css/expressMap.css', array('group' => CSS_DEFAULT, 'every_page' => false));
+	
+    //add js
+    drupal_add_js($path.'/theme/js/jquery-3.2.1.min.js');
+    drupal_add_js($path.'/theme/js/select2.full.min.js');
+    drupal_add_js($path.'/theme/js/popper.min.js');
+    drupal_add_js($path.'/theme/js/bootstrap.min.js');
+    drupal_add_js($path.'/theme/js/FileSaver.min.js');
+    drupal_add_js($path.'/theme/js/expression-map.bundle.min.js');
+
+    return theme('zmap_expression_search_result', array('etype' => $etype, 'geneids' => $geneids, 'samples' => $samples));
+}
+
+/**
+ * Implements hook_theme.
+ */
+function zmap_expression_theme()
+{
+    $path = drupal_get_path('module', 'zmap_expression');
+    $theme = array(
+        'zmap_expression_search' => array(
+            'variables' => array('type' => null),
+            'template' => 'zmap_expression_search',
+            'path' => "$path/theme",
+        ),
+        'zmap_expression_search_result' => array(
+            'template' => 'zmap_expression_search_result',
+            'path' => "$path/theme",
+        ),
+    );
+
+    return $theme;
+}
+
+/**
+ * download search result tsv file.
+ */
+function zmap_expression_search_result_downloadtsv($filename)
+{
+    $files_dir = variable_get('file_public_path', conf_path().'/files');
+    $path = $files_dir.'/zmap_expression_search_result/'.$filename;
+    $file_size = filesize($path);
+    $buffer = 1024;
+    $count = 0;
+    if (file_exists($path)) {
+        header('Content-type:application/octet-stream');
+        header('Accept-Ranges:bytes');
+        header("Accept-Length:$file_size");
+        header('Content-Disposition:attachment;filename='.$filename);
+        $fp = fopen($path, 'r');
+        while (!feof($fp) && $count < $file_size) {
+            $contents = fread($fp, $buffer);
+            $count += $buffer;
+            echo $contents;
+        }
+        fclose($fp);
+    } else {
+        drupal_not_fount();
+    }
+}
