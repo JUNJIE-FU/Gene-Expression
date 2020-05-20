@@ -2,7 +2,7 @@
 
 Tripal module for visualization of gene expression patterns in ZEAMAP
 
-[**DEMO**](http://www.zeamap.com/zmap_expression/search/result/etype/ref/geneids/Zm00015a000003%2C%2CZm00015a000005%2C%2CZm00015a000008%2C%2CZm00015a000009%2C%2CZm00015a000011%2C%2CZm00015a000012%2C%2CZm00015a000021%2C%2CZm00015a000023/samples/SK_15_DAP_Kernel%2CSK_Immature_Ear%2CSK_Internode%2CSK_Leaf%2CSK_Mature_pollen%2CSK_Primary_root%2CSK_SAM%2CSK_Silk%2CSK_Tassel)
+View a demo here: [**DEMO**](http://www.zeamap.com/zmap_expression/search/result/etype/ref/geneids/Zm00015a000003%2C%2CZm00015a000005%2C%2CZm00015a000008%2C%2CZm00015a000009%2C%2CZm00015a000011%2C%2CZm00015a000012%2C%2CZm00015a000021%2C%2CZm00015a000023/samples/SK_15_DAP_Kernel%2CSK_Immature_Ear%2CSK_Internode%2CSK_Leaf%2CSK_Mature_pollen%2CSK_Primary_root%2CSK_SAM%2CSK_Silk%2CSK_Tassel)
 
 ## Platform
 
